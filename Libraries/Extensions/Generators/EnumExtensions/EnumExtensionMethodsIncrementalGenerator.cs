@@ -225,7 +225,7 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                                            namespace {{Strings.AnalyzersAttributesNamespace}};
 
                                            /// <summary>Assembly attribute declaring a known pairing of an <see langword="enum" /> type to an extension class.</summary>
-                                           /// <remarks>This attribute should only be written by internal source generators for Terminal.Gui. No other usage of any kind is supported.</remarks>
+                                           /// <remarks>This attribute should only be written by internal source generators for EnumEnhancer. No other usage of any kind is supported.</remarks>
                                            {{Strings.Templates.AttributesForGeneratedTypes}}
                                            [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple = true)]
                                            public sealed class {{nameof(AssemblyExtendedEnumTypeAttribute)}} : System.Attribute
@@ -238,7 +238,7 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                                                    EnumType = enumType;
                                                    ExtensionClass = extensionClass;
                                                }
-                                               /// <summary>An <see langword="enum" /> type that has been extended by Terminal.Gui source generators.</summary>
+                                               /// <summary>An <see langword="enum" /> type that has been extended by EnumEnhancer source generators.</summary>
                                                public System.Type EnumType { get; init; }
                                                /// <summary>A class containing extension methods for <see cref="EnumType"/>.</summary>
                                                public System.Type ExtensionClass { get; init; }

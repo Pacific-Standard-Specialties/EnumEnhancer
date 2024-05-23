@@ -18,31 +18,33 @@ namespace EnumEnhancer.Analyzers;
 internal sealed class GenerateEnumExtensionMethodsAttributeAnalyzer : DiagnosticAnalyzer
 {
     // ReSharper disable once InconsistentNaming
-    private static readonly DiagnosticDescriptor EE0001_GlobalNamespaceNotSupported = new(
-                                                                                           // ReSharper restore InconsistentNaming
-                                                                                           "EE0001",
-                                                                                           $"{nameof(GenerateEnumExtensionMethodsAttribute)} not supported on global enums",
-                                                                                           "{0} is in the global namespace, which is not supported by the source generator ({1}) used by {2}. Move the enum to a namespace or remove the attribute.",
-                                                                                           "Usage",
-                                                                                           DiagnosticSeverity.Error,
-                                                                                           true,
-                                                                                           null,
-                                                                                           null,
-                                                                                           WellKnownDiagnosticTags.NotConfigurable,
-                                                                                           WellKnownDiagnosticTags.Compiler);
+    private static readonly DiagnosticDescriptor EE0001_GlobalNamespaceNotSupported =
+        new(
+            // ReSharper restore InconsistentNaming
+            "EE0001",
+            $"{nameof(GenerateEnumExtensionMethodsAttribute)} not supported on global enums",
+            "{0} is in the global namespace, which is not supported by the source generator ({1}) used by {2}. Move the enum to a namespace or remove the attribute.",
+            "Usage",
+            DiagnosticSeverity.Error,
+            true,
+            null,
+            null,
+            WellKnownDiagnosticTags.NotConfigurable,
+            WellKnownDiagnosticTags.Compiler);
 
     // ReSharper disable once InconsistentNaming
-    private static readonly DiagnosticDescriptor EE0002_UnderlyingTypeNotSupported = new(
-                                                                                          "EE0002",
-                                                                                          $"{nameof(GenerateEnumExtensionMethodsAttribute)} not supported for this enum type",
-                                                                                          "{0} has an underlying type of {1}, which is not supported by the source generator ({2}) used by {3}. Only enums backed by int or uint are supported.",
-                                                                                          "Usage",
-                                                                                          DiagnosticSeverity.Error,
-                                                                                          true,
-                                                                                          null,
-                                                                                          null,
-                                                                                          WellKnownDiagnosticTags.NotConfigurable,
-                                                                                          WellKnownDiagnosticTags.Compiler);
+    private static readonly DiagnosticDescriptor EE0002_UnderlyingTypeNotSupported =
+        new(
+            "EE0002",
+            $"{nameof(GenerateEnumExtensionMethodsAttribute)} not supported for this enum type",
+            "{0} has an underlying type of {1}, which is not supported by the source generator ({2}) used by {3}. Only enums backed by int or uint are supported.",
+            "Usage",
+            DiagnosticSeverity.Error,
+            true,
+            null,
+            null,
+            WellKnownDiagnosticTags.NotConfigurable,
+            WellKnownDiagnosticTags.Compiler);
 
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =

@@ -23,7 +23,7 @@ internal static class Strings
 
     internal const string InternalAnalyzersNamespace = $"{AnalyzersRootNamespace}.Internal";
 
-    internal const string TerminalGuiRootNamespace = "Terminal.Gui";
+    internal const string TerminalGuiRootNamespace = "EnumEnhancer";
 
     private const string AnalyzersRootNamespace = $"{TerminalGuiRootNamespace}.Analyzers";
     private const string NetStandard20CompatibilityNamespace = $"{InternalAnalyzersNamespace}.Compatibility";
@@ -123,7 +123,7 @@ internal static class Strings
                                                            """;
 
         /// <summary>
-        ///     A set of explicit type aliases to work around Terminal.Gui having name collisions with types like
+        ///     A set of explicit type aliases to work around EnumEnhancer having name collisions with types like
         ///     <see cref="Attribute"/>.
         /// </summary>
         internal const string DotnetExplicitTypeAliasUsingDirectives = $"""

@@ -24,7 +24,7 @@ namespace EnumEnhancer.Generators.EnumExtensions;
 /// <remarks>
 ///     Minimal validation is performed by this type.<br/>
 ///     Errors in analyzed source code will result in generation failure or broken output.<br/>
-///     This type is not intended for use outside of Terminal.Gui library development.
+///     This type is not intended for use outside of EnumEnhancer library development.
 /// </remarks>
 internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetadata<EnumExtensionMethodsGenerationInfo>,
                                                             IEqualityOperators<EnumExtensionMethodsGenerationInfo, EnumExtensionMethodsGenerationInfo, bool>
@@ -64,7 +64,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     /// <remarks>
     ///     Minimal validation is performed by this type.<br/>
     ///     Errors in analyzed source code will result in generation failure or broken output.<br/>
-    ///     This type is not intended for use outside of Terminal.Gui library development.
+    ///     This type is not intended for use outside of EnumEnhancer library development.
     /// </remarks>
     public EnumExtensionMethodsGenerationInfo(
         string enumNamespace,
