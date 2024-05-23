@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "InternalAnalyzers Debug": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\Debugging\\EnumEnhancer.Extensions.Debugging.csproj"
+    }
+  }
+}
