@@ -19,13 +19,13 @@ internal static class Strings
 
     internal const string DefaultTypeNameSuffix = "Extensions";
 
-    internal const string FallbackClassNamespace = $"{TerminalGuiRootNamespace}";
+    internal const string FallbackClassNamespace = $"{EnumEnhancerRootNamespace}";
 
     internal const string InternalAnalyzersNamespace = $"{AnalyzersRootNamespace}.Internal";
 
-    internal const string TerminalGuiRootNamespace = "EnumEnhancer";
+    internal const string EnumEnhancerRootNamespace = "EnumEnhancer";
 
-    private const string AnalyzersRootNamespace = $"{TerminalGuiRootNamespace}.Analyzers";
+    private const string AnalyzersRootNamespace = $"{EnumEnhancerRootNamespace}.Analyzers";
     private const string NetStandard20CompatibilityNamespace = $"{InternalAnalyzersNamespace}.Compatibility";
 
     /// <summary>
@@ -151,7 +151,7 @@ internal static class Strings
                                                              // These are dummy declarations to avoid complexity with conditional compilation.
                                                              #pragma warning disable IDE0079 // Remove unnecessary suppression
                                                              #pragma warning disable RCS1259 // Remove empty syntax
-                                                             namespace {{TerminalGuiRootNamespace}} { }
+                                                             namespace {{EnumEnhancerRootNamespace}} { }
                                                              namespace {{AnalyzersRootNamespace}} { }
                                                              namespace {{InternalAnalyzersNamespace}} { }
                                                              namespace {{NetStandard20CompatibilityNamespace}} { }
@@ -176,7 +176,7 @@ internal static class Strings
         internal const string StandardUsingDirectivesText = $"""
                                                              {DotnetNamespaceUsingDirectives}
                                                              {DotnetExplicitTypeAliasUsingDirectives}
-                                                             using {TerminalGuiRootNamespace};
+                                                             using {EnumEnhancerRootNamespace};
                                                              using {AnalyzersRootNamespace};
                                                              using {InternalAnalyzersNamespace};
                                                              using {AnalyzersAttributesNamespace};

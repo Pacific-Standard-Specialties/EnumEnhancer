@@ -1,7 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Text;
 
-namespace Terminal.Gui.Analyzers.Internal.Tests;
+namespace EnumEnhancer.Extensions.Tests;
 
 [TestFixture]
 [Category ("Extension Methods")]
