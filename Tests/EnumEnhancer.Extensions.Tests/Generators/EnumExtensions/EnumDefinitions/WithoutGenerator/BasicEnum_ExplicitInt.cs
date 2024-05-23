@@ -1,6 +1,6 @@
-﻿using Terminal.Gui.Analyzers.Internal.Attributes;
+﻿using EnumEnhancer.Attributes;
 
-namespace Terminal.Gui.Analyzers.Internal.Tests.Generators.EnumExtensions.EnumDefinitions;
+namespace EnumEnhancer.Tests.Generators.EnumExtensions.EnumDefinitions;
 
 /// <summary>
 ///     Basic enum with explicitly-defined backing type of int and no attributes on the enum or any of its members.

@@ -3,8 +3,6 @@ using System.Collections.Immutable;
 
 using EnumEnhancer.Attributes;
 using EnumEnhancer.Generators.EnumExtensions;
-
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 

@@ -1,21 +1,19 @@
-﻿using Terminal.Gui.Analyzers.Internal.Attributes;
+﻿
+namespace EnumEnhancer.Debugging;
 
-namespace Terminal.Gui.Analyzers.Internal.Debugging;
-
-class Program
+public static class Program
 {
-    static void Main (string [] args)
+    public static void Main ()
     {
-        
+      TestEnum e = TestEnum.One;
+      Console.WriteLine (e.AsInt32());
+      Console.WriteLine (e.AsUInt32());
+      Console.WriteLine (e.FastHasFlags(TestEnum.Zero));
+      Console.WriteLine (e.FastHasFlags(TestEnum.One));
+      Console.WriteLine (e.FastHasFlags(0));
+      Console.WriteLine (e.FastHasFlags(1));
+      Console.WriteLine (e.FastIsDefined(0));
+      Console.WriteLine (e.FastIsDefined(1));
+      Console.WriteLine (e.FastIsDefined(20));
     }
-}
-
-[GenerateEnumExtensionMethods]
-public enum TestEnum
-{
-    Zero = 0,
-    One,
-    Two = 2,
-    Three,
-    Six = 6
 }

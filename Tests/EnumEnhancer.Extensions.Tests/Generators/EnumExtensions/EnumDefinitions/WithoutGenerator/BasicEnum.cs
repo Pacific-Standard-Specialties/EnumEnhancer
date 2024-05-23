@@ -1,4 +1,4 @@
-﻿namespace Terminal.Gui.Analyzers.Internal.Tests.Generators.EnumExtensions.EnumDefinitions;
+﻿namespace EnumEnhancer.Tests.Generators.EnumExtensions.EnumDefinitions;
 
 /// <summary>
 ///     Basic enum without explicitly-defined backing type and no attributes on the enum or any of its members.

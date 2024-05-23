@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-
-namespace EnumEnhancer;
+﻿namespace EnumEnhancer;
 
 internal static class AccessibilityExtensions
 {

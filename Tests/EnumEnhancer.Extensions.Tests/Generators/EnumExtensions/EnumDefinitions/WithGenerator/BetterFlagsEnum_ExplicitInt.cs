@@ -1,6 +1,6 @@
-﻿using Terminal.Gui.Analyzers.Internal.Attributes;
+﻿using EnumEnhancer.Attributes;
 
-namespace Terminal.Gui.Analyzers.Internal.Tests.Generators.EnumExtensions.EnumDefinitions;
+namespace EnumEnhancer.Tests.Generators.EnumExtensions.EnumDefinitions;
 
 /// <summary>
 /// <summary>

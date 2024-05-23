@@ -4,8 +4,6 @@
 #pragma warning disable IDE0001, IDE0240
 #nullable enable
 
-using EnumEnhancer.Attributes;
-
 namespace EnumEnhancer.Attributes;
 
 /// <summary>

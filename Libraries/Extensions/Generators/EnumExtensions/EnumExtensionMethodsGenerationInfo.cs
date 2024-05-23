@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading;
 
-using EnumEnhancer;
 using EnumEnhancer.Attributes;
 using EnumEnhancer.Compatibility;
 using EnumEnhancer.Constants;
 
-using JetBrains.Annotations;
-
-using Microsoft.CodeAnalysis;
 
 namespace EnumEnhancer.Generators.EnumExtensions;
 
@@ -35,7 +28,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     private const int ExplicitNamespaceMask = 0b_0001;
     private const string GeneratorAttributeFullyQualifiedName = $"{GeneratorAttributeNamespace}.{GeneratorAttributeName}";
     private const string GeneratorAttributeName = nameof(GenerateEnumExtensionMethodsAttribute);
-    private const string GeneratorAttributeNamespace = Strings.AnalyzersAttributesNamespace;
+    private const string GeneratorAttributeNamespace = Strings.AttributesNamespace;
 
     /// <summary>
     ///     Type containing the information necessary to generate code according to the declared attribute values,
@@ -66,30 +59,27 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     ///     Errors in analyzed source code will result in generation failure or broken output.<br/>
     ///     This type is not intended for use outside of EnumEnhancer library development.
     /// </remarks>
-    public EnumExtensionMethodsGenerationInfo(
+    internal EnumExtensionMethodsGenerationInfo(
         string enumNamespace,
         string enumTypeName,
+        TypeCode enumBackingTypeCode = TypeCode.Int32,
         string? typeNamespace = null,
         string? typeName = null,
-        TypeCode enumBackingTypeCode = TypeCode.Int32,
         bool generateFastHasFlags = true,
         bool generateFastIsDefined = true
-    ) : this(enumNamespace, enumTypeName, enumBackingTypeCode)
-    {
-        GeneratedTypeNamespace = typeNamespace ?? enumNamespace;
-        GeneratedTypeName = typeName ?? string.Concat(enumTypeName, Strings.DefaultTypeNameSuffix);
-        GenerateFastHasFlags = generateFastHasFlags;
-        GenerateFastIsDefined = generateFastIsDefined;
-    }
-
-    public EnumExtensionMethodsGenerationInfo(string enumNamespace, string enumTypeName, TypeCode enumBackingType)
+    )
     {
         // Interning these since they're rather unlikely to change.
         string enumInternedNamespace = string.Intern(enumNamespace);
         string enumInternedName = string.Intern(enumTypeName);
+        GeneratedTypeNamespace = typeNamespace ?? enumInternedNamespace ?? Strings.EnumEnhancerRootNamespace;
+        GeneratedTypeName = typeName ?? string.Concat(enumInternedName, Strings.DefaultTypeNameSuffix);
+        GenerateFastHasFlags = generateFastHasFlags;
+        GenerateFastIsDefined = generateFastIsDefined;
+
         TargetTypeNamespace = enumInternedNamespace;
         TargetTypeName = enumInternedName;
-        EnumBackingTypeCode = enumBackingType;
+        EnumBackingTypeCode = enumBackingTypeCode;
     }
 
     [AccessedThroughProperty(nameof(EnumBackingTypeCode))]
@@ -119,6 +109,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     /// </remarks>
     public string? GeneratedTypeNamespace
     {
+        [return: NotNull]
         get => _generatedTypeNamespace ?? TargetTypeNamespace;
         set => _generatedTypeNamespace = value ?? TargetTypeNamespace;
     }
@@ -232,7 +223,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
 
     internal bool TryConfigure(INamedTypeSymbol enumSymbol, CancellationToken cancellationToken)
     {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using CancellationTokenSource? cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         cts.Token.ThrowIfCancellationRequested();
 
         ImmutableArray<AttributeData> attributes = enumSymbol.GetAttributes();
@@ -348,7 +339,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     [MemberNotNullWhen(true, nameof(_generatedTypeName), nameof(_generatedTypeNamespace))]
     private bool TryConfigure(AttributeData attr, CancellationToken cancellationToken)
     {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using CancellationTokenSource? cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         cts.Token.ThrowIfCancellationRequested();
 
         if (attr is not { NamedArguments.Length: > 0 })

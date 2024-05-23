@@ -1,6 +1,4 @@
-﻿using System.CodeDom.Compiler;
-
-namespace EnumEnhancer;
+﻿namespace EnumEnhancer;
 
 /// <summary>
 ///     Just a simple set of extension methods to increment and decrement the indentation
@@ -16,14 +14,13 @@ public static class IndentedTextWriterExtensions
     ///     The resulting indentation level of the <see cref="IndentedTextWriter"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int Pop(this IndentedTextWriter w, string endScopeDelimiter = "}")
+    public static void Pop(this IndentedTextWriter w, string endScopeDelimiter = "}")
     {
         if (w.Indent > 0)
         {
             w.Indent--;
             w.WriteLine(endScopeDelimiter);
         }
-        return w.Indent;
     }
 
     /// <summary>

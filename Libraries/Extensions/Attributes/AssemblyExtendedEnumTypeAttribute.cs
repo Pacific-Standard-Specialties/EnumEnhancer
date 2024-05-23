@@ -1,8 +1,7 @@
 ﻿// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable once RedundantNullableDirective
+// ReSharper disable RedundantNameQualifier
 #nullable enable
-
-using EnumEnhancer.Attributes;
 
 namespace EnumEnhancer.Attributes;
 
@@ -20,9 +19,9 @@ internal sealed class AssemblyExtendedEnumTypeAttribute : System.Attribute
         ExtensionClass = extensionClass;
     }
     ///<summary>An <see langword="enum" /> type that has been extended by EnumEnhancer source generators.</summary>
-    public System.Type EnumType { get; init; }
+    public System.Type EnumType { get; }
     ///<summary>A class containing extension methods for <see cref="EnumType"/>.</summary>
-    public System.Type ExtensionClass { get; init; }
+    public System.Type ExtensionClass { get; }
 
     /// <inheritdoc />
     public override string ToString() => $"{EnumType.Name},{ExtensionClass.Name}";

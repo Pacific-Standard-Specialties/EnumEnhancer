@@ -1,12 +1,8 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text;
+﻿using System.IO;
+using Microsoft.CodeAnalysis.Text;
 
 using EnumEnhancer.Constants;
 
-using Microsoft.CodeAnalysis.Text;
 
 namespace EnumEnhancer.Generators.EnumExtensions;
 

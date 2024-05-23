@@ -13,8 +13,8 @@ public class IndentedTextWriterExtensionsTests
     public void Pop_Decrements ()
     {
         StringBuilder sb = new (0);
-        using var sw = new StringWriter (sb);
-        using var writer = new IndentedTextWriter (sw);
+        using StringWriter sw = new(sb);
+        using IndentedTextWriter writer = new(sw);
         writer.Indent = 5;
 
         Assume.That (writer.Indent, Is.EqualTo (5));
@@ -27,8 +27,8 @@ public class IndentedTextWriterExtensionsTests
     public void Pop_WithClosing_WritesAndPops ([Values ("}", ")", "]")] string scopeClosing)
     {
         StringBuilder sb = new (256);
-        using var sw = new StringWriter (sb);
-        using var writer = new IndentedTextWriter (sw, "  ");
+        using StringWriter sw = new(sb);
+        using IndentedTextWriter writer = new(sw, "  ");
         writer.Indent = 5;
         writer.Flush ();
         Assume.That (writer.Indent, Is.EqualTo (5));
@@ -45,7 +45,7 @@ public class IndentedTextWriterExtensionsTests
         }
 
         writer.Flush ();
-        var result = sb.ToString ();
+        string result = sb.ToString ();
 
         Assert.That (
                      result,
@@ -65,8 +65,8 @@ public class IndentedTextWriterExtensionsTests
     public void Push_Increments ()
     {
         StringBuilder sb = new (32);
-        using var sw = new StringWriter (sb);
-        using var writer = new IndentedTextWriter (sw, "  ");
+        using StringWriter sw = new(sb);
+        using IndentedTextWriter writer = new(sw, "  ");
 
         for (int indentCount = 0; indentCount < 5; indentCount++)
         {
@@ -79,8 +79,8 @@ public class IndentedTextWriterExtensionsTests
     public void Push_WithOpening_WritesAndPushes ([Values ('{', '(', '[')] char scopeOpening)
     {
         StringBuilder sb = new (256);
-        using var sw = new StringWriter (sb);
-        using var writer = new IndentedTextWriter (sw, "  ");
+        using StringWriter sw = new(sb);
+        using IndentedTextWriter writer = new(sw, "  ");
 
         for (ushort indentCount = 0; indentCount < 5;)
         {
@@ -89,7 +89,7 @@ public class IndentedTextWriterExtensionsTests
         }
 
         writer.Flush ();
-        var result = sb.ToString ();
+        string result = sb.ToString ();
 
         Assert.That (
                      result,

@@ -1,7 +1,5 @@
 ﻿// ReSharper disable All
 
-using System;
-
 namespace EnumEnhancer.Attributes;
 
 /// <summary>

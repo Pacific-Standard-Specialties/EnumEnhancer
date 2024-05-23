@@ -1,8 +1,4 @@
-﻿using JetBrains.Annotations;
-
-using Microsoft.CodeAnalysis;
-
-namespace EnumEnhancer;
+﻿namespace EnumEnhancer;
 
 /// <summary>
 /// Interface for all generators to use for their metadata classes.
@@ -20,6 +16,7 @@ internal interface IGeneratedTypeMetadata<out TSelf> where TSelf : IGeneratedTyp
     string TargetTypeNamespace { get; }
     [UsedImplicitly]
     string TargetTypeName { get; }
+    [UsedImplicitly]
     string TargetTypeFullName { get; }
     [UsedImplicitly]
     Accessibility Accessibility { get; }

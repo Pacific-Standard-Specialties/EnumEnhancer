@@ -1,4 +1,4 @@
-﻿namespace Terminal.Gui.Analyzers.Internal.Tests.Generators.EnumExtensions.EnumDefinitions;
+﻿namespace EnumEnhancer.Tests.Generators.EnumExtensions.EnumDefinitions;
 
 /// <summary>
 ///     Flags enum without explicitly-defined backing type and only a <see cref="FlagsAttribute"/> on the enum declaration No other attributes on the enum or its members..

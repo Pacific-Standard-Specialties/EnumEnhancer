@@ -3,7 +3,6 @@
 // ReSharper disable ClassNeverInstantiated.Global
 
 #nullable enable
-using System;
 using Attribute = System.Attribute;
 using AttributeUsageAttribute = System.AttributeUsageAttribute;
 using AttributeTargets = System.AttributeTargets;

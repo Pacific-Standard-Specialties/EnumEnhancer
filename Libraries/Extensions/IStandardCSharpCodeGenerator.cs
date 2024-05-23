@@ -1,8 +1,4 @@
-﻿using System.Text;
-
-using JetBrains.Annotations;
-
-using Microsoft.CodeAnalysis.Text;
+﻿using Microsoft.CodeAnalysis.Text;
 
 namespace EnumEnhancer;
 
