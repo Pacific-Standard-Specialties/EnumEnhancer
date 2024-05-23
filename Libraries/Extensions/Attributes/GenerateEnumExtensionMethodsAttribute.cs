@@ -8,12 +8,12 @@ using Attribute = System.Attribute;
 using AttributeUsageAttribute = System.AttributeUsageAttribute;
 using AttributeTargets = System.AttributeTargets;
 
-namespace Terminal.Gui.Analyzers.Internal.Attributes;
+namespace EnumEnhancer.Attributes;
 
 /// <summary>
 ///     Used to enable source generation of a common set of extension methods for enum types.
 /// </summary>
-[AttributeUsage (AttributeTargets.Enum)]
+[AttributeUsage(AttributeTargets.Enum)]
 internal sealed class GenerateEnumExtensionMethodsAttribute : Attribute
 {
     /// <summary>
@@ -100,7 +100,7 @@ internal sealed class GenerateEnumExtensionMethodsAttribute : Attribute
     ///     <see langword="is"/> <see langword="null"/> &amp;&amp; <see cref="ClassNamespace"/> <see langword="is"/>
     ///     <see langword="null"/>
     /// </remarks>
-    public override bool IsDefaultAttribute ()
+    public override bool IsDefaultAttribute()
     {
         return FastIsDefined
                && !FastHasFlags

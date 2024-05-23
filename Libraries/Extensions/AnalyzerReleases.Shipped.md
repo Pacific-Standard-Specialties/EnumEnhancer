@@ -4,5 +4,5 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-TG0001  |   Usage  |  Error   | TG0001_GlobalNamespaceNotSupported
-TG0002  |   Usage  |  Error   | TG0002_UnderlyingTypeNotSupported
+EE0001  |   Usage  |  Error   | EE0001_GlobalNamespaceNotSupported
+EE0002  |   Usage  |  Error   | EE0002_UnderlyingTypeNotSupported

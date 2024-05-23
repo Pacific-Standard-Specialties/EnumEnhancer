@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Terminal.Gui.Analyzers.Internal.Attributes;
+namespace EnumEnhancer.Attributes;
 
 /// <summary>
 ///     Interface to simplify general enumeration of constructed generic types for

@@ -4,9 +4,10 @@ using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Terminal.Gui.Analyzers.Internal.Attributes;
 
-namespace Terminal.Gui.Analyzers.Internal.Constants;
+using EnumEnhancer.Attributes;
+
+namespace EnumEnhancer.Constants;
 
 /// <summary>String constants for frequently-used boilerplate.</summary>
 /// <remarks>These are for performance, instead of using Roslyn to build it all during execution of analyzers.</remarks>
@@ -14,7 +15,7 @@ internal static class Strings
 {
     internal const string AnalyzersAttributesNamespace = $"{InternalAnalyzersNamespace}.Attributes";
 
-    internal const string AssemblyExtendedEnumTypeAttributeFullName = $"{AnalyzersAttributesNamespace}.{nameof (AssemblyExtendedEnumTypeAttribute)}";
+    internal const string AssemblyExtendedEnumTypeAttributeFullName = $"{AnalyzersAttributesNamespace}.{nameof(AssemblyExtendedEnumTypeAttribute)}";
 
     internal const string DefaultTypeNameSuffix = "Extensions";
 
@@ -38,21 +39,21 @@ internal static class Strings
         internal static class Attributes
         {
             /// <inheritdoc cref="CompilerGeneratedAttribute"/>
-            internal const string CompilerGenerated = $"{Namespaces.System_Runtime_CompilerServices}.{nameof (CompilerGeneratedAttribute)}";
+            internal const string CompilerGenerated = $"{Namespaces.System_Runtime_CompilerServices}.{nameof(CompilerGeneratedAttribute)}";
 
             /// <inheritdoc cref="DebuggerNonUserCodeAttribute"/>
-            internal const string DebuggerNonUserCode = $"{Namespaces.System_Diagnostics}.{nameof (DebuggerNonUserCodeAttribute)}";
+            internal const string DebuggerNonUserCode = $"{Namespaces.System_Diagnostics}.{nameof(DebuggerNonUserCodeAttribute)}";
 
             /// <inheritdoc cref="ExcludeFromCodeCoverageAttribute"/>
-            internal const string ExcludeFromCodeCoverage = $"{Namespaces.System_Diagnostics_CodeAnalysis}.{nameof (ExcludeFromCodeCoverageAttribute)}";
+            internal const string ExcludeFromCodeCoverage = $"{Namespaces.System_Diagnostics_CodeAnalysis}.{nameof(ExcludeFromCodeCoverageAttribute)}";
 
-            internal const string Flags = $"{Namespaces.SystemNs}.{nameof (FlagsAttribute)}";
+            internal const string Flags = $"{Namespaces.SystemNs}.{nameof(FlagsAttribute)}";
 
-            internal const string GeneratedCode = $"{Namespaces.System_CodeDom_Compiler}.{nameof (GeneratedCodeAttribute)}";
+            internal const string GeneratedCode = $"{Namespaces.System_CodeDom_Compiler}.{nameof(GeneratedCodeAttribute)}";
 
             /// <inheritdoc cref="MethodImplOptions.AggressiveInlining"/>
             /// <remarks>Use of this attribute should be carefully evaluated.</remarks>
-            internal const string MethodImpl = $"{Namespaces.System_Runtime_CompilerServices}.{nameof (MethodImplAttribute)}";
+            internal const string MethodImpl = $"{Namespaces.System_Runtime_CompilerServices}.{nameof(MethodImplAttribute)}";
 
             /// <summary>Attributes formatted for use in code, including square brackets.</summary>
             internal static class Applications
@@ -60,12 +61,12 @@ internal static class Strings
                 // ReSharper disable MemberHidesStaticFromOuterClass
                 internal const string Flags = $"[{Attributes.Flags}]";
 
-                /// <inheritdoc cref="System.CodeDom.Compiler.GeneratedCodeAttribute"/>
+                /// <inheritdoc cref="GeneratedCodeAttribute"/>
                 internal const string GeneratedCode = $"""[{Attributes.GeneratedCode}("{InternalAnalyzersNamespace}","1.0")]""";
 
                 /// <inheritdoc cref="MethodImplOptions.AggressiveInlining"/>
                 /// <remarks>Use of this attribute should be carefully evaluated.</remarks>
-                internal const string AggressiveInlining = $"[{MethodImpl}({Types.MethodImplOptions}.{nameof (MethodImplOptions.AggressiveInlining)})]";
+                internal const string AggressiveInlining = $"[{MethodImpl}({Types.MethodImplOptions}.{nameof(MethodImplOptions.AggressiveInlining)})]";
 
                 /// <inheritdoc cref="DebuggerNonUserCodeAttribute"/>
                 internal const string DebuggerNonUserCode = $"[{Attributes.DebuggerNonUserCode}]";
@@ -83,27 +84,27 @@ internal static class Strings
         /// <summary>Names of dotnet namespaces.</summary>
         internal static class Namespaces
         {
-            internal const string SystemNs = nameof (System);
+            internal const string SystemNs = nameof(System);
             // ReSharper disable InconsistentNaming
-            internal const string System_CodeDom = $"{SystemNs}.{nameof (System.CodeDom)}";
-            internal const string System_CodeDom_Compiler = $"{System_CodeDom}.{nameof (System.CodeDom.Compiler)}";
-            internal const string System_ComponentModel = $"{SystemNs}.{nameof (System.ComponentModel)}";
-            internal const string System_Diagnostics = $"{SystemNs}.{nameof (System.Diagnostics)}";
-            internal const string System_Diagnostics_CodeAnalysis = $"{System_Diagnostics}.{nameof (System.Diagnostics.CodeAnalysis)}";
-            internal const string System_Numerics = $"{SystemNs}.{nameof (System.Numerics)}";
-            internal const string System_Runtime = $"{SystemNs}.{nameof (System.Runtime)}";
-            internal const string System_Runtime_CompilerServices = $"{System_Runtime}.{nameof (System.Runtime.CompilerServices)}";
+            internal const string System_CodeDom = $"{SystemNs}.{nameof(System.CodeDom)}";
+            internal const string System_CodeDom_Compiler = $"{System_CodeDom}.{nameof(System.CodeDom.Compiler)}";
+            internal const string System_ComponentModel = $"{SystemNs}.{nameof(System.ComponentModel)}";
+            internal const string System_Diagnostics = $"{SystemNs}.{nameof(System.Diagnostics)}";
+            internal const string System_Diagnostics_CodeAnalysis = $"{System_Diagnostics}.{nameof(System.Diagnostics.CodeAnalysis)}";
+            internal const string System_Numerics = $"{SystemNs}.{nameof(System.Numerics)}";
+            internal const string System_Runtime = $"{SystemNs}.{nameof(System.Runtime)}";
+            internal const string System_Runtime_CompilerServices = $"{System_Runtime}.{nameof(System.Runtime.CompilerServices)}";
             // ReSharper restore InconsistentNaming
         }
 
         internal static class Types
         {
-            internal const string Attribute = $"{Namespaces.SystemNs}.{nameof (System.Attribute)}";
-            internal const string AttributeTargets = $"{Namespaces.SystemNs}.{nameof (System.AttributeTargets)}";
-            internal const string AttributeUsageAttribute = $"{Namespaces.SystemNs}.{nameof (System.AttributeUsageAttribute)}";
+            internal const string Attribute = $"{Namespaces.SystemNs}.{nameof(System.Attribute)}";
+            internal const string AttributeTargets = $"{Namespaces.SystemNs}.{nameof(System.AttributeTargets)}";
+            internal const string AttributeUsageAttribute = $"{Namespaces.SystemNs}.{nameof(System.AttributeUsageAttribute)}";
 
             internal const string MethodImplOptions =
-                $"{Namespaces.System_Runtime_CompilerServices}.{nameof (System.Runtime.CompilerServices.MethodImplOptions)}";
+                $"{Namespaces.System_Runtime_CompilerServices}.{nameof(System.Runtime.CompilerServices.MethodImplOptions)}";
         }
     }
 
@@ -123,7 +124,7 @@ internal static class Strings
 
         /// <summary>
         ///     A set of explicit type aliases to work around Terminal.Gui having name collisions with types like
-        ///     <see cref="System.Attribute"/>.
+        ///     <see cref="Attribute"/>.
         /// </summary>
         internal const string DotnetExplicitTypeAliasUsingDirectives = $"""
                                                                         using Attribute = {DotnetNames.Types.Attribute};

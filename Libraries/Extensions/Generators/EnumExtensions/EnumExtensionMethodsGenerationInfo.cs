@@ -4,12 +4,17 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
-using JetBrains.Annotations;
-using Microsoft.CodeAnalysis;
-using Terminal.Gui.Analyzers.Internal.Attributes;
-using Terminal.Gui.Analyzers.Internal.Constants;
 
-namespace Terminal.Gui.Analyzers.Internal.Generators.EnumExtensions;
+using EnumEnhancer;
+using EnumEnhancer.Attributes;
+using EnumEnhancer.Compatibility;
+using EnumEnhancer.Constants;
+
+using JetBrains.Annotations;
+
+using Microsoft.CodeAnalysis;
+
+namespace EnumEnhancer.Generators.EnumExtensions;
 
 /// <summary>
 ///     Type containing the information necessary to generate code according to the declared attribute values,
@@ -24,12 +29,12 @@ namespace Terminal.Gui.Analyzers.Internal.Generators.EnumExtensions;
 internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetadata<EnumExtensionMethodsGenerationInfo>,
                                                             IEqualityOperators<EnumExtensionMethodsGenerationInfo, EnumExtensionMethodsGenerationInfo, bool>
 {
-    private const int ExplicitFastHasFlagsMask  = 0b_0100;
+    private const int ExplicitFastHasFlagsMask = 0b_0100;
     private const int ExplicitFastIsDefinedMask = 0b_1000;
-    private const int ExplicitNameMask          = 0b_0010;
-    private const int ExplicitNamespaceMask     = 0b_0001;
+    private const int ExplicitNameMask = 0b_0010;
+    private const int ExplicitNamespaceMask = 0b_0001;
     private const string GeneratorAttributeFullyQualifiedName = $"{GeneratorAttributeNamespace}.{GeneratorAttributeName}";
-    private const string GeneratorAttributeName = nameof (GenerateEnumExtensionMethodsAttribute);
+    private const string GeneratorAttributeName = nameof(GenerateEnumExtensionMethodsAttribute);
     private const string GeneratorAttributeNamespace = Strings.AnalyzersAttributesNamespace;
 
     /// <summary>
@@ -61,7 +66,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     ///     Errors in analyzed source code will result in generation failure or broken output.<br/>
     ///     This type is not intended for use outside of Terminal.Gui library development.
     /// </remarks>
-    public EnumExtensionMethodsGenerationInfo (
+    public EnumExtensionMethodsGenerationInfo(
         string enumNamespace,
         string enumTypeName,
         string? typeNamespace = null,
@@ -69,40 +74,40 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
         TypeCode enumBackingTypeCode = TypeCode.Int32,
         bool generateFastHasFlags = true,
         bool generateFastIsDefined = true
-    ) : this (enumNamespace, enumTypeName, enumBackingTypeCode)
+    ) : this(enumNamespace, enumTypeName, enumBackingTypeCode)
     {
         GeneratedTypeNamespace = typeNamespace ?? enumNamespace;
-        GeneratedTypeName = typeName ?? string.Concat (enumTypeName, Strings.DefaultTypeNameSuffix);
+        GeneratedTypeName = typeName ?? string.Concat(enumTypeName, Strings.DefaultTypeNameSuffix);
         GenerateFastHasFlags = generateFastHasFlags;
         GenerateFastIsDefined = generateFastIsDefined;
     }
 
-    public EnumExtensionMethodsGenerationInfo (string enumNamespace, string enumTypeName, TypeCode enumBackingType)
+    public EnumExtensionMethodsGenerationInfo(string enumNamespace, string enumTypeName, TypeCode enumBackingType)
     {
         // Interning these since they're rather unlikely to change.
-        string enumInternedNamespace = string.Intern (enumNamespace);
-        string enumInternedName = string.Intern (enumTypeName);
+        string enumInternedNamespace = string.Intern(enumNamespace);
+        string enumInternedName = string.Intern(enumTypeName);
         TargetTypeNamespace = enumInternedNamespace;
         TargetTypeName = enumInternedName;
         EnumBackingTypeCode = enumBackingType;
     }
 
-    [AccessedThroughProperty (nameof (EnumBackingTypeCode))]
+    [AccessedThroughProperty(nameof(EnumBackingTypeCode))]
     private readonly TypeCode _enumBackingTypeCode;
 
-    [AccessedThroughProperty (nameof (GeneratedTypeName))]
+    [AccessedThroughProperty(nameof(GeneratedTypeName))]
     private string? _generatedTypeName;
 
-    [AccessedThroughProperty (nameof (GeneratedTypeNamespace))]
+    [AccessedThroughProperty(nameof(GeneratedTypeNamespace))]
     private string? _generatedTypeNamespace;
 
-    private BitVector32 _discoveredProperties = new (0);
+    private BitVector32 _discoveredProperties = new(0);
 
     /// <summary>The name of the extension class.</summary>
     public string? GeneratedTypeName
     {
-        get => _generatedTypeName ?? string.Concat (TargetTypeName, Strings.DefaultTypeNameSuffix);
-        set => _generatedTypeName = value ?? string.Concat (TargetTypeName, Strings.DefaultTypeNameSuffix);
+        get => _generatedTypeName ?? string.Concat(TargetTypeName, Strings.DefaultTypeNameSuffix);
+        set => _generatedTypeName = value ?? string.Concat(TargetTypeName, Strings.DefaultTypeNameSuffix);
     }
 
     /// <summary>The namespace for the extension class.</summary>
@@ -119,7 +124,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     }
 
     /// <inheritdoc/>
-    public string TargetTypeFullName => string.Concat (TargetTypeNamespace, ".", TargetTypeName);
+    public string TargetTypeFullName => string.Concat(TargetTypeNamespace, ".", TargetTypeName);
 
     /// <inheritdoc/>
     public Accessibility Accessibility
@@ -191,7 +196,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
         {
             if (value is not TypeCode.Int32 and not TypeCode.UInt32)
             {
-                throw new NotSupportedException ("Only System.Int32 and System.UInt32 are supported at this time.");
+                throw new NotSupportedException("Only System.Int32 and System.UInt32 are supported at this time.");
             }
 
             _enumBackingTypeCode = value;
@@ -204,7 +209,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     public bool GenerateFastHasFlags { [UsedImplicitly] get; set; }
 
     /// <summary>Whether a switch-based IsDefined replacement will be generated (Default: true)</summary>
-    public bool GenerateFastIsDefined { [UsedImplicitly]get; set; } = true;
+    public bool GenerateFastIsDefined { [UsedImplicitly] get; set; } = true;
 
     internal ImmutableHashSet<int>? _intMembers;
     internal ImmutableHashSet<uint>? _uIntMembers;
@@ -217,25 +222,25 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
     /// <summary>
     ///     Whether a Flags was found on the enum type.
     /// </summary>
-    internal bool HasFlagsAttribute {[UsedImplicitly] get; set; }
+    internal bool HasFlagsAttribute { [UsedImplicitly] get; set; }
 
     private static readonly SymbolDisplayFormat FullyQualifiedSymbolDisplayFormatWithoutGlobal =
         SymbolDisplayFormat.FullyQualifiedFormat
-                           .WithGlobalNamespaceStyle (
+                           .WithGlobalNamespaceStyle(
                                                       SymbolDisplayGlobalNamespaceStyle.Omitted);
 
 
-    internal bool TryConfigure (INamedTypeSymbol enumSymbol, CancellationToken cancellationToken)
+    internal bool TryConfigure(INamedTypeSymbol enumSymbol, CancellationToken cancellationToken)
     {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource (cancellationToken);
-        cts.Token.ThrowIfCancellationRequested ();
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.Token.ThrowIfCancellationRequested();
 
-        ImmutableArray<AttributeData> attributes = enumSymbol.GetAttributes ();
+        ImmutableArray<AttributeData> attributes = enumSymbol.GetAttributes();
 
         // This is theoretically impossible, but guarding just in case and canceling if it does happen.
         if (attributes.Length == 0)
         {
-            cts.Cancel (true);
+            cts.Cancel(true);
 
             return false;
         }
@@ -247,8 +252,8 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
         // or unsupported enum underlying types.
         foreach (AttributeData attr in attributes)
         {
-            cts.Token.ThrowIfCancellationRequested ();
-            string? attributeFullyQualifiedName = attr.AttributeClass?.ToDisplayString (FullyQualifiedSymbolDisplayFormatWithoutGlobal);
+            cts.Token.ThrowIfCancellationRequested();
+            string? attributeFullyQualifiedName = attr.AttributeClass?.ToDisplayString(FullyQualifiedSymbolDisplayFormatWithoutGlobal);
 
             // Skip if null or not possibly an attribute we care about
             if (attributeFullyQualifiedName is null or not { Length: >= 5 })
@@ -260,28 +265,28 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
             {
                 // For Flags enums
                 case Strings.DotnetNames.Attributes.Flags:
-                {
-                    HasFlagsAttribute = true;
-                }
+                    {
+                        HasFlagsAttribute = true;
+                    }
 
                     continue;
 
                 // For the attribute that started this whole thing
                 case GeneratorAttributeFullyQualifiedName:
 
-                {
-                    // If we can't successfully complete this method,
-                    // something is wrong enough that we may as well just stop now.
-                    if (!TryConfigure (attr, cts.Token))
                     {
-                        if (cts.Token.CanBeCanceled)
+                        // If we can't successfully complete this method,
+                        // something is wrong enough that we may as well just stop now.
+                        if (!TryConfigure(attr, cts.Token))
                         {
-                            cts.Cancel ();
-                        }
+                            if (cts.Token.CanBeCanceled)
+                            {
+                                cts.Cancel();
+                            }
 
-                        return false;
+                            return false;
+                        }
                     }
-                }
 
                     continue;
             }
@@ -292,75 +297,77 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
         {
             if (EnumBackingTypeCode == TypeCode.Int32)
             {
-                PopulateIntMembersHashSet (enumSymbol);
+                PopulateIntMembersHashSet(enumSymbol);
             }
             else if (EnumBackingTypeCode == TypeCode.UInt32)
             {
-                PopulateUIntMembersHashSet (enumSymbol);
+                PopulateUIntMembersHashSet(enumSymbol);
             }
         }
 
         return true;
     }
 
-    private void PopulateIntMembersHashSet (INamedTypeSymbol enumSymbol)
+    private void PopulateIntMembersHashSet(INamedTypeSymbol enumSymbol)
     {
-        ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers ();
-        IEnumerable<IFieldSymbol> fieldSymbols = enumMembers.OfType<IFieldSymbol> ();
-        _intMembers = fieldSymbols.Select (static m => m.HasConstantValue ? (int)m.ConstantValue : 0).ToImmutableHashSet ();
+        ImmutableArray<ISymbol> enumMembers = enumSymbol.GetMembers();
+        IEnumerable<IFieldSymbol> fieldSymbols = enumMembers.OfType<IFieldSymbol>();
+        _intMembers = fieldSymbols.Select(static m => m.HasConstantValue ? (int)m.ConstantValue : 0).ToImmutableHashSet();
     }
-    private void PopulateUIntMembersHashSet (INamedTypeSymbol enumSymbol)
+    private void PopulateUIntMembersHashSet(INamedTypeSymbol enumSymbol)
     {
-        _uIntMembers = enumSymbol.GetMembers ().OfType<IFieldSymbol> ().Select (static m => (uint)m.ConstantValue).ToImmutableHashSet ();
+        _uIntMembers = enumSymbol.GetMembers().OfType<IFieldSymbol>().Select(static m => (uint)m.ConstantValue).ToImmutableHashSet();
     }
 
     private bool HasExplicitFastHasFlags
     {
-        [UsedImplicitly]get => _discoveredProperties [ExplicitFastHasFlagsMask];
-        set => _discoveredProperties [ExplicitFastHasFlagsMask] = value;
+        [UsedImplicitly]
+        get => _discoveredProperties[ExplicitFastHasFlagsMask];
+        set => _discoveredProperties[ExplicitFastHasFlagsMask] = value;
     }
 
     private bool HasExplicitFastIsDefined
     {
-        [UsedImplicitly]get => _discoveredProperties [ExplicitFastIsDefinedMask];
-        set => _discoveredProperties [ExplicitFastIsDefinedMask] = value;
+        [UsedImplicitly]
+        get => _discoveredProperties[ExplicitFastIsDefinedMask];
+        set => _discoveredProperties[ExplicitFastIsDefinedMask] = value;
     }
 
     private bool HasExplicitTypeName
     {
-        get => _discoveredProperties [ExplicitNameMask];
-        set => _discoveredProperties [ExplicitNameMask] = value;
+        get => _discoveredProperties[ExplicitNameMask];
+        set => _discoveredProperties[ExplicitNameMask] = value;
     }
 
     private bool HasExplicitTypeNamespace
     {
-        get => _discoveredProperties [ExplicitNamespaceMask];
-        set => _discoveredProperties [ExplicitNamespaceMask] = value;
+        get => _discoveredProperties[ExplicitNamespaceMask];
+        set => _discoveredProperties[ExplicitNamespaceMask] = value;
     }
 
-    [MemberNotNullWhen (true, nameof (_generatedTypeName), nameof (_generatedTypeNamespace))]
-    private bool TryConfigure (AttributeData attr, CancellationToken cancellationToken)
+    [MemberNotNullWhen(true, nameof(_generatedTypeName), nameof(_generatedTypeNamespace))]
+    private bool TryConfigure(AttributeData attr, CancellationToken cancellationToken)
     {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource (cancellationToken);
-        cts.Token.ThrowIfCancellationRequested ();
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.Token.ThrowIfCancellationRequested();
 
         if (attr is not { NamedArguments.Length: > 0 })
         {
             // Just a naked attribute, so configure with appropriate defaults.
             GeneratedTypeNamespace = TargetTypeNamespace;
-            GeneratedTypeName = string.Concat (TargetTypeName, Strings.DefaultTypeNameSuffix);
+            GeneratedTypeName = string.Concat(TargetTypeName, Strings.DefaultTypeNameSuffix);
 
             return true;
         }
 
-        cts.Token.ThrowIfCancellationRequested ();
+        cts.Token.ThrowIfCancellationRequested();
 
         foreach (KeyValuePair<string, TypedConstant> kvp in attr.NamedArguments)
         {
             string? propName = kvp.Key;
             TypedConstant propValue = kvp.Value;
 
-            cts.Token.ThrowIfCancellationRequested ();
+            cts.Token.ThrowIfCancellationRequested();
 
             // For every property name and value pair, set associated metadata
             // property, if understood.
@@ -373,7 +380,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
 
                 // ClassName is specified, not explicitly null, and at least 1 character long.
                 case (AttributeProperties.TypeNamePropertyName, { IsNull: false, Value: string { Length: > 1 } classNameProvidedValue }):
-                    if (string.IsNullOrWhiteSpace (classNameProvidedValue))
+                    if (string.IsNullOrWhiteSpace(classNameProvidedValue))
                     {
                         return false;
                     }
@@ -386,7 +393,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
                 // Class namespace is specified, not explicitly null, and at least 1 character long.
                 case (AttributeProperties.TypeNamespacePropertyName, { IsNull: false, Value: string { Length: > 1 } classNamespaceProvidedValue }):
 
-                    if (string.IsNullOrWhiteSpace (classNamespaceProvidedValue))
+                    if (string.IsNullOrWhiteSpace(classNamespaceProvidedValue))
                     {
                         return false;
                     }
@@ -417,7 +424,7 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
         // Configure anything that wasn't specified that doesn't have an implicitly safe default
         if (!HasExplicitTypeName || _generatedTypeName is null)
         {
-            _generatedTypeName = string.Concat (TargetTypeName, Strings.DefaultTypeNameSuffix);
+            _generatedTypeName = string.Concat(TargetTypeName, Strings.DefaultTypeNameSuffix);
         }
 
         if (!HasExplicitTypeNamespace || _generatedTypeNamespace is null)
@@ -435,9 +442,9 @@ internal sealed record EnumExtensionMethodsGenerationInfo : IGeneratedTypeMetada
 
     private static class AttributeProperties
     {
-        internal const string FastHasFlagsPropertyName = nameof (GenerateEnumExtensionMethodsAttribute.FastHasFlags);
-        internal const string FastIsDefinedPropertyName = nameof (GenerateEnumExtensionMethodsAttribute.FastIsDefined);
-        internal const string TypeNamePropertyName = nameof (GenerateEnumExtensionMethodsAttribute.ClassName);
-        internal const string TypeNamespacePropertyName = nameof (GenerateEnumExtensionMethodsAttribute.ClassNamespace);
+        internal const string FastHasFlagsPropertyName = nameof(GenerateEnumExtensionMethodsAttribute.FastHasFlags);
+        internal const string FastIsDefinedPropertyName = nameof(GenerateEnumExtensionMethodsAttribute.FastIsDefined);
+        internal const string TypeNamePropertyName = nameof(GenerateEnumExtensionMethodsAttribute.ClassName);
+        internal const string TypeNamespacePropertyName = nameof(GenerateEnumExtensionMethodsAttribute.ClassNamespace);
     }
 }

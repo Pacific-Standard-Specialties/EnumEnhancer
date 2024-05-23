@@ -1,8 +1,10 @@
 ﻿using System.Text;
+
 using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis.Text;
 
-namespace Terminal.Gui.Analyzers.Internal;
+namespace EnumEnhancer;
 
 internal interface IStandardCSharpCodeGenerator<T> where T : IGeneratedTypeMetadata<T>
 {
@@ -17,7 +19,7 @@ internal interface IStandardCSharpCodeGenerator<T> where T : IGeneratedTypeMetad
     /// <returns></returns>
     [UsedImplicitly]
     [SkipLocalsInit]
-    ref readonly SourceText GenerateSourceText (Encoding? encoding = null);
+    ref readonly SourceText GenerateSourceText(Encoding? encoding = null);
 
     /// <summary>
     ///     A type implementing <see cref="IGeneratedTypeMetadata{T}"/> which

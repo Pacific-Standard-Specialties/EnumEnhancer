@@ -2,7 +2,9 @@
 // ReSharper disable once RedundantNullableDirective
 #nullable enable
 
-namespace Terminal.Gui.Analyzers.Internal.Attributes;
+using EnumEnhancer.Attributes;
+
+namespace EnumEnhancer.Attributes;
 
 /// <summary>Assembly attribute declaring a known pairing of an <see langword="enum" /> type to an extension class.</summary>
 /// <remarks>This attribute should only be written by internal source generators for Terminal.Gui. No other usage of any kind is supported.</remarks>
@@ -12,7 +14,7 @@ internal sealed class AssemblyExtendedEnumTypeAttribute : System.Attribute
     /// <summary>Creates a new instance of <see cref="AssemblyExtendedEnumTypeAttribute" /> from the provided parameters.</summary>
     /// <param name="enumType">The <see cref="System.Type" /> of an <see langword="enum" /> decorated with a <see cref="GenerateEnumExtensionMethodsAttribute" />.</param>
     /// <param name="extensionClass">The <see cref="System.Type" /> of the <see langword="class" /> decorated with an <see cref="ExtensionsForEnumTypeAttribute{TEnum}" /> referring to the same type as <paramref name="enumType" />.</param>
-    public AssemblyExtendedEnumTypeAttribute (System.Type enumType, System.Type extensionClass)
+    public AssemblyExtendedEnumTypeAttribute(System.Type enumType, System.Type extensionClass)
     {
         EnumType = enumType;
         ExtensionClass = extensionClass;
@@ -23,5 +25,5 @@ internal sealed class AssemblyExtendedEnumTypeAttribute : System.Attribute
     public System.Type ExtensionClass { get; init; }
 
     /// <inheritdoc />
-    public override string ToString () => $"{EnumType.Name},{ExtensionClass.Name}";
+    public override string ToString() => $"{EnumType.Name},{ExtensionClass.Name}";
 }

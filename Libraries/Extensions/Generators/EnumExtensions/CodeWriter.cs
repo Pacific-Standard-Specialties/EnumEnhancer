@@ -3,10 +3,12 @@ using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
-using Microsoft.CodeAnalysis.Text;
-using Terminal.Gui.Analyzers.Internal.Constants;
 
-namespace Terminal.Gui.Analyzers.Internal.Generators.EnumExtensions;
+using EnumEnhancer.Constants;
+
+using Microsoft.CodeAnalysis.Text;
+
+namespace EnumEnhancer.Generators.EnumExtensions;
 
 /// <summary>
 ///     The class responsible for turning an <see cref="EnumExtensionMethodsGenerationInfo"/>
@@ -20,8 +22,8 @@ namespace Terminal.Gui.Analyzers.Internal.Generators.EnumExtensions;
 ///     by an instance of this class. Behavior if those rules are not followed
 ///     is undefined.
 /// </param>
-[SuppressMessage ("CodeQuality", "IDE0079", Justification = "Suppressions here are intentional and the warnings they disable are just noise.")]
-internal sealed class CodeWriter (in EnumExtensionMethodsGenerationInfo metadata) : IStandardCSharpCodeGenerator<EnumExtensionMethodsGenerationInfo>
+[SuppressMessage("CodeQuality", "IDE0079", Justification = "Suppressions here are intentional and the warnings they disable are just noise.")]
+internal sealed class CodeWriter(in EnumExtensionMethodsGenerationInfo metadata) : IStandardCSharpCodeGenerator<EnumExtensionMethodsGenerationInfo>
 {
     // Using the null suppression operator here because this will always be
     // initialized to non-null before a reference to it is returned.
@@ -30,7 +32,7 @@ internal sealed class CodeWriter (in EnumExtensionMethodsGenerationInfo metadata
     /// <inheritdoc/>
     public EnumExtensionMethodsGenerationInfo Metadata
     {
-        [MethodImpl (MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [return: NotNull]
         get;
         [param: DisallowNull]
@@ -38,10 +40,10 @@ internal sealed class CodeWriter (in EnumExtensionMethodsGenerationInfo metadata
     } = metadata;
 
     /// <inheritdoc/>
-    public ref readonly SourceText GenerateSourceText (Encoding? encoding = null)
+    public ref readonly SourceText GenerateSourceText(Encoding? encoding = null)
     {
         encoding ??= Encoding.UTF8;
-        _sourceText = SourceText.From (GetFullSourceText (), encoding);
+        _sourceText = SourceText.From(GetFullSourceText(), encoding);
 
         return ref _sourceText;
     }
@@ -57,11 +59,11 @@ internal sealed class CodeWriter (in EnumExtensionMethodsGenerationInfo metadata
                                                       : string.Empty;
 
     private string EnumTypeKeyword => Metadata.EnumBackingTypeCode switch
-                                      {
-                                          TypeCode.Int32 => "int",
-                                          TypeCode.UInt32 => "uint",
-                                          _ => string.Empty
-                                      };
+    {
+        TypeCode.Int32 => "int",
+        TypeCode.UInt32 => "uint",
+        _ => string.Empty
+    };
 
     /// <summary>Gets the class declaration line.</summary>
     private string ExtensionClassDeclarationLine => $"public static partial class {Metadata.GeneratedTypeName}";
@@ -89,88 +91,88 @@ internal sealed class CodeWriter (in EnumExtensionMethodsGenerationInfo metadata
     ///     this method is safe, as we'll always be using a DWORD.
     /// </remarks>
     /// <param name="w">An instance of an <see cref="IndentedTextWriter"/> to write to.</param>
-    private void GetFastHasFlagsMethods (IndentedTextWriter w)
+    private void GetFastHasFlagsMethods(IndentedTextWriter w)
     {
         // The version taking the same enum type as the check value.
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <summary>Determines if the specified flags are set in the current value of this <see cref=\"{Metadata.TargetTypeFullName}\" />.</summary>");
-        w.WriteLine ("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
+        w.WriteLine("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
 
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <returns>True, if all flags present in <paramref name=\"checkFlags\" /> are also present in the current value of the <see cref=\"{Metadata.TargetTypeFullName}\" />.<br />Otherwise false.</returns>");
-        w.WriteLine (Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
+        w.WriteLine(Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
 
-        w.Push (
-                $"{Metadata.Accessibility.ToCSharpString ()} static bool FastHasFlags (this {Metadata.TargetTypeFullName} e, {Metadata.TargetTypeFullName} checkFlags)");
-        w.WriteLine ($"ref uint enumCurrentValueRef = ref Unsafe.As<{Metadata.TargetTypeFullName},uint> (ref e);");
-        w.WriteLine ($"ref uint checkFlagsValueRef = ref Unsafe.As<{Metadata.TargetTypeFullName},uint> (ref checkFlags);");
-        w.WriteLine ("return (enumCurrentValueRef & checkFlagsValueRef) == checkFlagsValueRef;");
-        w.Pop ();
+        w.Push(
+                $"{Metadata.Accessibility.ToCSharpString()} static bool FastHasFlags (this {Metadata.TargetTypeFullName} e, {Metadata.TargetTypeFullName} checkFlags)");
+        w.WriteLine($"ref uint enumCurrentValueRef = ref Unsafe.As<{Metadata.TargetTypeFullName},uint> (ref e);");
+        w.WriteLine($"ref uint checkFlagsValueRef = ref Unsafe.As<{Metadata.TargetTypeFullName},uint> (ref checkFlags);");
+        w.WriteLine("return (enumCurrentValueRef & checkFlagsValueRef) == checkFlagsValueRef;");
+        w.Pop();
 
         // The version taking the underlying type of the enum as the check value.
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <summary>Determines if the specified mask bits are set in the current value of this <see cref=\"{Metadata.TargetTypeFullName}\" />.</summary>");
 
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <param name=\"e\">The <see cref=\"{Metadata.TargetTypeFullName}\" /> value to check against the <paramref name=\"mask\" /> value.</param>");
-        w.WriteLine ("/// <param name=\"mask\">A mask to apply to the current value.</param>");
+        w.WriteLine("/// <param name=\"mask\">A mask to apply to the current value.</param>");
 
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <returns>True, if all bits set to 1 in the mask are also set to 1 in the current value of the <see cref=\"{Metadata.TargetTypeFullName}\" />.<br />Otherwise false.</returns>");
-        w.WriteLine ("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
-        w.WriteLine (Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
+        w.WriteLine("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
+        w.WriteLine(Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
 
-        w.Push (
-                $"{Metadata.Accessibility.ToCSharpString ()} static bool FastHasFlags (this {Metadata.TargetTypeFullName} e, {EnumTypeKeyword} mask)");
-        w.WriteLine ($"ref {EnumTypeKeyword} enumCurrentValueRef = ref Unsafe.As<{Metadata.TargetTypeFullName},{EnumTypeKeyword}> (ref e);");
-        w.WriteLine ("return (enumCurrentValueRef & mask) == mask;");
-        w.Pop ();
+        w.Push(
+                $"{Metadata.Accessibility.ToCSharpString()} static bool FastHasFlags (this {Metadata.TargetTypeFullName} e, {EnumTypeKeyword} mask)");
+        w.WriteLine($"ref {EnumTypeKeyword} enumCurrentValueRef = ref Unsafe.As<{Metadata.TargetTypeFullName},{EnumTypeKeyword}> (ref e);");
+        w.WriteLine("return (enumCurrentValueRef & mask) == mask;");
+        w.Pop();
     }
 
     /// <summary>
     ///     Creates the code for the FastIsDefined method.
     /// </summary>
-    [SuppressMessage ("ReSharper", "SwitchStatementHandlesSomeKnownEnumValuesWithDefault", Justification = "Only need to handle int and uint.")]
-    [SuppressMessage ("ReSharper", "SwitchStatementMissingSomeEnumCasesNoDefault", Justification = "Only need to handle int and uint.")]
-    private void GetFastIsDefinedMethod (IndentedTextWriter w)
+    [SuppressMessage("ReSharper", "SwitchStatementHandlesSomeKnownEnumValuesWithDefault", Justification = "Only need to handle int and uint.")]
+    [SuppressMessage("ReSharper", "SwitchStatementMissingSomeEnumCasesNoDefault", Justification = "Only need to handle int and uint.")]
+    private void GetFastIsDefinedMethod(IndentedTextWriter w)
     {
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <summary>Determines if the specified <see langword=\"{EnumTypeKeyword}\" /> value is explicitly defined as a named value of the <see cref=\"{Metadata.TargetTypeFullName}\" /> <see langword=\"enum\" /> type.</summary>");
 
-        w.WriteLine (
+        w.WriteLine(
                      "/// <remarks>Only explicitly named values return true, as with IsDefined. Combined valid flag values of flags enums which are not explicitly named will return false.</remarks>");
 
-        w.Push (
-                $"{Metadata.Accessibility.ToCSharpString ()} static bool FastIsDefined (this {Metadata.TargetTypeFullName} e, {EnumTypeKeyword} value)");
-        w.Push ("return value switch");
+        w.Push(
+                $"{Metadata.Accessibility.ToCSharpString()} static bool FastIsDefined (this {Metadata.TargetTypeFullName} e, {EnumTypeKeyword} value)");
+        w.Push("return value switch");
 
         switch (Metadata.EnumBackingTypeCode)
         {
             case TypeCode.Int32:
                 foreach (int definedValue in Metadata._intMembers)
                 {
-                    w.WriteLine ($"{definedValue:D} => true,");
+                    w.WriteLine($"{definedValue:D} => true,");
                 }
 
                 break;
             case TypeCode.UInt32:
                 foreach (uint definedValue in Metadata._uIntMembers)
                 {
-                    w.WriteLine ($"{definedValue:D} => true,");
+                    w.WriteLine($"{definedValue:D} => true,");
                 }
 
                 break;
         }
 
-        w.WriteLine ("_ => false");
+        w.WriteLine("_ => false");
 
-        w.Pop ("};");
-        w.Pop ();
+        w.Pop("};");
+        w.Pop();
     }
 
-    private string GetFullSourceText ()
+    private string GetFullSourceText()
     {
-        StringBuilder sb = new (
+        StringBuilder sb = new(
                                 $"""
                                  {Strings.Templates.StandardHeader}
 
@@ -186,50 +188,50 @@ internal sealed class CodeWriter (in EnumExtensionMethodsGenerationInfo metadata
                                  """,
                                 4096);
 
-        using IndentedTextWriter w = new (new StringWriter (sb));
-        w.Push ();
+        using IndentedTextWriter w = new(new StringWriter(sb));
+        w.Push();
 
-        GetNamedValuesToInt32Method (w);
-        GetNamedValuesToUInt32Method (w);
+        GetNamedValuesToInt32Method(w);
+        GetNamedValuesToUInt32Method(w);
 
         if (Metadata.GenerateFastIsDefined)
         {
-            GetFastIsDefinedMethod (w);
+            GetFastIsDefinedMethod(w);
         }
 
         if (Metadata.GenerateFastHasFlags)
         {
-            GetFastHasFlagsMethods (w);
+            GetFastHasFlagsMethods(w);
         }
 
-        w.Pop ();
+        w.Pop();
 
-        w.Flush ();
+        w.Flush();
 
-        return sb.ToString ();
+        return sb.ToString();
     }
 
-    [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    private void GetNamedValuesToInt32Method (IndentedTextWriter w)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void GetNamedValuesToInt32Method(IndentedTextWriter w)
     {
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <summary>Directly converts this <see cref=\"{Metadata.TargetTypeFullName}\" /> value to an <see langword=\"int\" /> value with the same binary representation.</summary>");
-        w.WriteLine ("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
-        w.WriteLine (Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
-        w.Push ($"{Metadata.Accessibility.ToCSharpString ()} static int AsInt32 (this {Metadata.TargetTypeFullName} e)");
-        w.WriteLine ($"return Unsafe.As<{Metadata.TargetTypeFullName},int> (ref e);");
-        w.Pop ();
+        w.WriteLine("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
+        w.WriteLine(Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
+        w.Push($"{Metadata.Accessibility.ToCSharpString()} static int AsInt32 (this {Metadata.TargetTypeFullName} e)");
+        w.WriteLine($"return Unsafe.As<{Metadata.TargetTypeFullName},int> (ref e);");
+        w.Pop();
     }
 
-    [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    private void GetNamedValuesToUInt32Method (IndentedTextWriter w)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void GetNamedValuesToUInt32Method(IndentedTextWriter w)
     {
-        w.WriteLine (
+        w.WriteLine(
                      $"/// <summary>Directly converts this <see cref=\"{Metadata.TargetTypeFullName}\" /> value to a <see langword=\"uint\" /> value with the same binary representation.</summary>");
-        w.WriteLine ("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
-        w.WriteLine (Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
-        w.Push ($"{Metadata.Accessibility.ToCSharpString ()} static uint AsUInt32 (this {Metadata.TargetTypeFullName} e)");
-        w.WriteLine ($"return Unsafe.As<{Metadata.TargetTypeFullName},uint> (ref e);");
-        w.Pop ();
+        w.WriteLine("/// <remarks>NO VALIDATION IS PERFORMED!</remarks>");
+        w.WriteLine(Strings.DotnetNames.Attributes.Applications.AggressiveInlining);
+        w.Push($"{Metadata.Accessibility.ToCSharpString()} static uint AsUInt32 (this {Metadata.TargetTypeFullName} e)");
+        w.WriteLine($"return Unsafe.As<{Metadata.TargetTypeFullName},uint> (ref e);");
+        w.Pop();
     }
 }

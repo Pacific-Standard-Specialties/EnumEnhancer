@@ -1,6 +1,6 @@
 ﻿using System.CodeDom.Compiler;
 
-namespace Terminal.Gui.Analyzers.Internal;
+namespace EnumEnhancer;
 
 /// <summary>
 ///     Just a simple set of extension methods to increment and decrement the indentation
@@ -15,13 +15,13 @@ public static class IndentedTextWriterExtensions
     /// <returns>
     ///     The resulting indentation level of the <see cref="IndentedTextWriter"/>.
     /// </returns>
-    [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    public static int Pop (this IndentedTextWriter w, string endScopeDelimiter = "}")
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Pop(this IndentedTextWriter w, string endScopeDelimiter = "}")
     {
         if (w.Indent > 0)
         {
             w.Indent--;
-            w.WriteLine (endScopeDelimiter);
+            w.WriteLine(endScopeDelimiter);
         }
         return w.Indent;
     }
@@ -29,18 +29,18 @@ public static class IndentedTextWriterExtensions
     /// <summary>
     ///     Decrements <see cref="IndentedTextWriter.Indent"/> by 1 and then writes a closing curly brace.
     /// </summary>
-    [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    public static void PopCurly (this IndentedTextWriter w, bool withSemicolon = false)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void PopCurly(this IndentedTextWriter w, bool withSemicolon = false)
     {
         w.Indent--;
 
         if (withSemicolon)
         {
-            w.WriteLine ("};");
+            w.WriteLine("};");
         }
         else
         {
-            w.WriteLine ('}');
+            w.WriteLine('}');
         }
     }
 
@@ -56,15 +56,15 @@ public static class IndentedTextWriterExtensions
     ///     An opening delimiter to write. Written before the indentation and after <paramref name="declaration"/> (if provided). Default is an opening curly brace.
     /// </param>
     /// <remarks>Calling with no parameters will write an opening curly brace and a line break at the current indentation and then increment.</remarks>
-    [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    public static void Push (this IndentedTextWriter w, string? declaration = null, char scopeDelimiter = '{')
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Push(this IndentedTextWriter w, string? declaration = null, char scopeDelimiter = '{')
     {
         if (declaration is { Length: > 0 })
         {
-            w.WriteLine (declaration);
+            w.WriteLine(declaration);
         }
 
-        w.WriteLine (scopeDelimiter);
+        w.WriteLine(scopeDelimiter);
 
         w.Indent++;
     }

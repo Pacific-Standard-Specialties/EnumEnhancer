@@ -1,5 +1,5 @@
 ﻿// ReSharper disable once CheckNamespace
-namespace System.Numerics;
+namespace EnumEnhancer.Compatibility;
 /// <summary>
 /// Included for compatibility with .net7+, but has no members.
 /// Thus it cannot be explicitly used in generator code.

@@ -1,7 +1,8 @@
 ﻿using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis;
 
-namespace Terminal.Gui.Analyzers.Internal;
+namespace EnumEnhancer;
 
 /// <summary>
 /// Interface for all generators to use for their metadata classes.

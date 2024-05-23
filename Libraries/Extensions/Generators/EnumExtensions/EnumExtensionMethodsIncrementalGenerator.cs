@@ -2,28 +2,30 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Threading;
+
+using EnumEnhancer.Attributes;
+using EnumEnhancer.Constants;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Terminal.Gui.Analyzers.Internal.Attributes;
-using Terminal.Gui.Analyzers.Internal.Constants;
 
-namespace Terminal.Gui.Analyzers.Internal.Generators.EnumExtensions;
+namespace EnumEnhancer.Generators.EnumExtensions;
 
 /// <summary>
 ///     Incremental code generator for enums decorated with <see cref="GenerateEnumExtensionMethodsAttribute"/>.
 /// </summary>
-[SuppressMessage ("CodeQuality", "IDE0079", Justification = "Suppressions here are intentional and the warnings they disable are just noise.")]
-[Generator (LanguageNames.CSharp)]
+[SuppressMessage("CodeQuality", "IDE0079", Justification = "Suppressions here are intentional and the warnings they disable are just noise.")]
+[Generator(LanguageNames.CSharp)]
 public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGenerator
 {
     private const string ExtensionsForEnumTypeAttributeFullyQualifiedName = $"{Strings.AnalyzersAttributesNamespace}.{ExtensionsForEnumTypeAttributeName}";
     private const string ExtensionsForEnumTypeAttributeName = "ExtensionsForEnumTypeAttribute";
     private const string GeneratorAttributeFullyQualifiedName = $"{Strings.AnalyzersAttributesNamespace}.{GeneratorAttributeName}";
-    private const string GeneratorAttributeName = nameof (GenerateEnumExtensionMethodsAttribute);
+    private const string GeneratorAttributeName = nameof(GenerateEnumExtensionMethodsAttribute);
 
     /// <summary>Fully-qualified symbol name format without the "global::" prefix.</summary>
     private static readonly SymbolDisplayFormat _fullyQualifiedSymbolDisplayFormatWithoutGlobal =
-        SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle (SymbolDisplayGlobalNamespaceStyle.Omitted);
+        SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
     /// <inheritdoc/>
     /// <remarks>
@@ -41,11 +43,11 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
     ///         compiler, etc), sometimes as often as every single keystroke.
     ///     </para>
     /// </remarks>
-    public void Initialize (IncrementalGeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Write out namespaces that may be used later. Harmless to declare them now and will avoid
         // additional processing and potential omissions later on.
-        context.RegisterPostInitializationOutput (GenerateDummyNamespaces);
+        context.RegisterPostInitializationOutput(GenerateDummyNamespaces);
 
         // This executes the delegate given to it immediately after Roslyn gets all set up.
         // 
@@ -54,7 +56,7 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
         // be declared explicitly in the target project.
         // This is important, as it guarantees the type will exist and also guarantees it is
         // defined exactly as the generator expects it to be defined.
-        context.RegisterPostInitializationOutput (GenerateAttributeSources);
+        context.RegisterPostInitializationOutput(GenerateAttributeSources);
 
         // Next up, we define our pipeline.
         // To do so, we create one or more IncrementalValuesProvider<T> objects, each of which
@@ -113,13 +115,13 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                 //
                 // While the syntax of that .Where call is the same as LINQ, that is actually a
                 // highly-optimized implementation specifically for this use.
-                .ForAttributeWithMetadataName (
+                .ForAttributeWithMetadataName(
                                                GeneratorAttributeFullyQualifiedName,
                                                IsPotentiallyInterestingDeclaration,
                                                GatherMetadataForCodeGeneration
                                               )
-                .WithTrackingName ("CollectEnumMetadata")
-                .Where (static eInfo => eInfo is { });
+                .WithTrackingName("CollectEnumMetadata")
+                .Where(static eInfo => eInfo is { });
 
         // Finally, we wire up any IncrementalValuesProvider<T> instances above to the appropriate
         // delegate that takes the SourceProductionContext that is current at run-time and an instance of
@@ -131,16 +133,16 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
         // all of the filters above, so we get to write that method from the perspective of a single
         // enum type declaration.
 
-        context.RegisterSourceOutput (enumGenerationInfos, GenerateSourceFromGenerationInfo);
+        context.RegisterSourceOutput(enumGenerationInfos, GenerateSourceFromGenerationInfo);
     }
 
-    private static EnumExtensionMethodsGenerationInfo? GatherMetadataForCodeGeneration (
+    private static EnumExtensionMethodsGenerationInfo? GatherMetadataForCodeGeneration(
         GeneratorAttributeSyntaxContext context,
         CancellationToken cancellationToken
     )
     {
-        var cts = CancellationTokenSource.CreateLinkedTokenSource (cancellationToken);
-        cancellationToken.ThrowIfCancellationRequested ();
+        var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
 
         // If it's not an enum symbol, we don't care.
         // EnumUnderlyingType is null for non-enums, so this validates it's an enum declaration.
@@ -160,37 +162,37 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
 
         string enumName = namedSymbol.Name;
 
-        string enumNamespace = enumNamespaceSymbol.ToDisplayString (_fullyQualifiedSymbolDisplayFormatWithoutGlobal);
+        string enumNamespace = enumNamespaceSymbol.ToDisplayString(_fullyQualifiedSymbolDisplayFormatWithoutGlobal);
 
         TypeCode enumTypeCode = namedSymbol.EnumUnderlyingType.Name switch
-                                {
-                                    "UInt32" => TypeCode.UInt32,
-                                    "Int32" => TypeCode.Int32,
-                                    _ => TypeCode.Empty
-                                };
+        {
+            "UInt32" => TypeCode.UInt32,
+            "Int32" => TypeCode.Int32,
+            _ => TypeCode.Empty
+        };
 
-        EnumExtensionMethodsGenerationInfo info = new (
+        EnumExtensionMethodsGenerationInfo info = new(
                                                        enumNamespace,
                                                        enumName,
                                                        enumTypeCode
                                                       );
 
-        if (!info.TryConfigure (namedSymbol, cts.Token))
+        if (!info.TryConfigure(namedSymbol, cts.Token))
         {
-            cts.Cancel ();
-            cts.Token.ThrowIfCancellationRequested ();
+            cts.Cancel();
+            cts.Token.ThrowIfCancellationRequested();
         }
 
         return info;
     }
 
 
-    private static void GenerateAttributeSources (IncrementalGeneratorPostInitializationContext postInitializationContext)
+    private static void GenerateAttributeSources(IncrementalGeneratorPostInitializationContext postInitializationContext)
     {
         postInitializationContext
-            .AddSource (
-                        $"{nameof (IExtensionsForEnumTypeAttributes)}.g.cs",
-                        SourceText.From (
+            .AddSource(
+                        $"{nameof(IExtensionsForEnumTypeAttributes)}.g.cs",
+                        SourceText.From(
                                          $$"""
                                            // ReSharper disable All
                                            {{Strings.Templates.AutoGeneratedCommentBlock}}
@@ -212,9 +214,9 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                                          Encoding.UTF8));
 
         postInitializationContext
-            .AddSource (
-                        $"{nameof (AssemblyExtendedEnumTypeAttribute)}.g.cs",
-                        SourceText.From (
+            .AddSource(
+                        $"{nameof(AssemblyExtendedEnumTypeAttribute)}.g.cs",
+                        SourceText.From(
                                          $$"""
                                            // ReSharper disable All
                                            #nullable enable
@@ -248,9 +250,9 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                                          Encoding.UTF8));
 
         postInitializationContext
-            .AddSource (
+            .AddSource(
                         $"{GeneratorAttributeFullyQualifiedName}.g.cs",
-                        SourceText.From (
+                        SourceText.From(
                                          $$"""
                                            {{Strings.Templates.StandardHeader}}
                                            
@@ -360,9 +362,9 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                                          Encoding.UTF8));
 
         postInitializationContext
-            .AddSource (
+            .AddSource(
                         $"{ExtensionsForEnumTypeAttributeFullyQualifiedName}.g.cs",
-                        SourceText.From (
+                        SourceText.From(
                                          $$"""
                                            // ReSharper disable RedundantNameQualifier
                                            // ReSharper disable RedundantNullableDirective
@@ -407,15 +409,15 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
                                          Encoding.UTF8));
     }
 
-    [SuppressMessage ("Roslynator", "RCS1267", Justification = "Intentionally used so that Spans are used.")]
-    private static void GenerateDummyNamespaces (IncrementalGeneratorPostInitializationContext postInitializeContext)
+    [SuppressMessage("Roslynator", "RCS1267", Justification = "Intentionally used so that Spans are used.")]
+    private static void GenerateDummyNamespaces(IncrementalGeneratorPostInitializationContext postInitializeContext)
     {
-        postInitializeContext.AddSource (
-                                         string.Concat (Strings.InternalAnalyzersNamespace, "Namespaces.g.cs"),
-                                         SourceText.From (Strings.Templates.DummyNamespaceDeclarations, Encoding.UTF8));
+        postInitializeContext.AddSource(
+                                         string.Concat(Strings.InternalAnalyzersNamespace, "Namespaces.g.cs"),
+                                         SourceText.From(Strings.Templates.DummyNamespaceDeclarations, Encoding.UTF8));
     }
 
-    private static void GenerateSourceFromGenerationInfo (SourceProductionContext context, EnumExtensionMethodsGenerationInfo? enumInfo)
+    private static void GenerateSourceFromGenerationInfo(SourceProductionContext context, EnumExtensionMethodsGenerationInfo? enumInfo)
     {
         // Just in case we still made it this far with a null...
         if (enumInfo is not { })
@@ -423,9 +425,9 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
             return;
         }
 
-        CodeWriter writer = new (enumInfo);
+        CodeWriter writer = new(enumInfo);
 
-        context.AddSource ($"{enumInfo.FullyQualifiedClassName}.g.cs", writer.GenerateSourceText ());
+        context.AddSource($"{enumInfo.FullyQualifiedClassName}.g.cs", writer.GenerateSourceText());
     }
 
     /// <summary>
@@ -434,19 +436,19 @@ public sealed class EnumExtensionMethodsIncrementalGenerator : IIncrementalGener
     ///     (Class|Struct)DeclarationSyntax.<br/>
     ///     Additional filtering is performed in later stages.
     /// </summary>
-    private static bool IsPotentiallyInterestingDeclaration (SyntaxNode syntaxNode, CancellationToken cancellationToken)
+    private static bool IsPotentiallyInterestingDeclaration(SyntaxNode syntaxNode, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested ();
+        cancellationToken.ThrowIfCancellationRequested();
 
         return syntaxNode is
-               {
-                   RawKind: 8858, //(int)SyntaxKind.EnumDeclaration,
-                   Parent.RawKind: 8845 //(int)SyntaxKind.FileScopedNamespaceDeclaration
+        {
+            RawKind: 8858, //(int)SyntaxKind.EnumDeclaration,
+            Parent.RawKind: 8845 //(int)SyntaxKind.FileScopedNamespaceDeclaration
                                    or 8842 //(int)SyntaxKind.NamespaceDeclaration
                                    or 8855 //(int)SyntaxKind.ClassDeclaration
                                    or 8856 //(int)SyntaxKind.StructDeclaration
                                    or 9068 //(int)SyntaxKind.RecordStructDeclaration
                                    or 9063 //(int)SyntaxKind.RecordDeclaration
-               };
+        };
     }
 }

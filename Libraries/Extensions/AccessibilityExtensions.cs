@@ -1,10 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Terminal.Gui.Analyzers.Internal;
+namespace EnumEnhancer;
 
 internal static class AccessibilityExtensions
 {
-    internal static string ToCSharpString (this Accessibility value)
+    internal static string ToCSharpString(this Accessibility value)
     {
         return value switch
         {
