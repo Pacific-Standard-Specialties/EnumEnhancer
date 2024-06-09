@@ -1,0 +1,5 @@
+* text   whitespace=tab-in-indent
+*.sh     text eol=lf diff=bash 
+*.csproj text working-tree-encoding=UTF-8
+*.sln    text merge=text
+*.cs     diff=csharp
