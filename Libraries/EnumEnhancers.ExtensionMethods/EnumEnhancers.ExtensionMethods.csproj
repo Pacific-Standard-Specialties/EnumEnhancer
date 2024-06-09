@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <DefineConstants>$(DefineConstants);JETBRAINS_ANNOTATIONS;CONTRACTS_FULL;CODE_ANALYSIS</DefineConstants>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyName>PSS.EnumEnhancers.ExtensionMethods</AssemblyName>
+    <RootNamespace>$(AssemblyName)</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>12</LangVersion>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <WarningLevel>7</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineTrace>true</DefineTrace>
+  </PropertyGroup>
+
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineDebug>true</DefineDebug>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <ApiCompatExcludeAttributesFile Include="ApiCompatExcludedAttributes.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Compatibility/*.cs" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Disabling some useless warnings caused by the netstandard2.0 target -->
+    <NoWarn>$(NoWarn);nullable;CA1067</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Compatibility/IEqualityOperators.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="ApiCompatExcludedAttributes.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- JetBrains annotations for static analysis. -->
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" PrivateAssets="all" />
+    <PackageReference Include="JetBrains.ExternalAnnotations" Version="10.2.147" PrivateAssets="all" />
+
+    <!-- Polyfill generator that adds in various attributes missing in netstandard2.0,  -->
+    <!-- to allow use of newer C# features than otherwise possible with netstandard2.0. -->
+    <PackageReference Include="Meziantou.Polyfill" Version="1.0.38" PrivateAssets="all" />
+    
+    <!-- Libraries necessary for working with Roslyn -->
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.9.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="all" />
+
+    <!-- Roslynator is a bunch of analyzers for use within this project - not a code dependency. -->
+    <PackageReference Include="Roslynator.Analyzers" Version="4.12.2" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.2" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.CSharp" Version="4.12.2" PrivateAssets="all" />
+
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" PrivateAssets="all" />
+    <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnumEnhancers.ExtensionMethods.Attributes\EnumEnhancers.ExtensionMethods.Attributes.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="EnumEnhancer" />
+    <Using Include="JetBrains.Annotations" />
+    <Using Include="Microsoft.CodeAnalysis" />
+    <Using Include="System.CodeDom.Compiler" />
+    <Using Include="System.Collections.Specialized" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+    <Using Include="System.Diagnostics.CodeAnalysis.NotNullAttribute" Alias="NotNullAttribute" />
+    <Using Include="System.Runtime.CompilerServices" />
+    <Using Include="System.Text" />
+    <Using Include="PSS.EnumEnhancers.ExtensionMethods.Attributes" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--<InternalsVisibleTo Include="EnumEnhancer.Extensions.Tests" />-->
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!--NuGet packaging properties-->
+    <PackageId>$(AssemblyName)</PackageId>
+    <Title>Enum Enhancers - Extension Methods</Title>
+    <Authors>PacificStandardSpecialties,dodexahedron</Authors>
+    <Description>Roslyn analyzers and generators for creating high-performance alternatives to common enum functionality with a focus on minimal heap allocation and zero reflection.</Description>
+    <Copyright>© 2024 Brandon Thetford</Copyright>
+    <PackageProjectUrl>https://github.com/Pacific-Standard-Specialties/EnumEnhancers</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>roslyn;c#;csharp;enums;generators;analyzers;performance</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSymbols>True</IncludeSymbols>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Company>Pacific Standard Specialties, Inc.</Company>
+  </PropertyGroup>
+</Project>
